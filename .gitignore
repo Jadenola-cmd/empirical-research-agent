@@ -9,3 +9,7 @@ htmlcov/
 .env.*
 *.log
 tmp_work/
+AI_Output/
+**/AI_Output/
+.workbuddy/
+**/.workbuddy/

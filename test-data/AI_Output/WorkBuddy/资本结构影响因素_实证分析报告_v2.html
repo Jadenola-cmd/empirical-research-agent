@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>资本结构影响因素 — 实证分析报告</title>
+<style>
+  body { font-family: "SimSun", "Songti SC", serif; font-size: 12pt; margin: 50px 60px; line-height: 1.8; color: #111; }
+  h1 { text-align: center; font-size: 18pt; margin-bottom: 8px; }
+  .subtitle { text-align: center; font-size: 11pt; color: #555; margin-bottom: 40px; }
+  h2 { font-size: 14pt; margin-top: 40px; margin-bottom: 10px; }
+  h3 { font-size: 12pt; margin-top: 28px; margin-bottom: 8px; }
+
+  /* ========== 三线表通用样式 ========== */
+  table { border-collapse: collapse; width: 100%; margin: 12px 0 4px 0; font-size: 11pt; }
+  table caption { font-size: 11pt; font-weight: bold; text-align: left; margin-bottom: 4px; }
+  thead tr:first-child th { border-top: 2px solid #000; }
+  thead tr:last-child th  { border-bottom: 1px solid #000; }
+  tbody tr:last-child td  { border-bottom: 2px solid #000; }
+  th { background: none; font-weight: bold; text-align: center; padding: 5px 10px; }
+  td { padding: 4px 10px; text-align: center; vertical-align: middle; }
+  .varname { text-align: left; font-style: italic; padding-left: 6px; }
+  .tstat   { color: #444; font-size: 10.5pt; }   /* t值行 */
+  .note    { font-size: 10pt; color: #444; margin-top: 3px; margin-bottom: 20px; line-height: 1.5; }
+
+  /* ========== 相关系数矩阵专用 ========== */
+  .corr-table td, .corr-table th { padding: 3px 8px; font-size: 10.5pt; }
+  .corr-upper { color: #bbb; }   /* 上三角：留灰色占位 */
+  .corr-diag  { font-weight: bold; }
+
+  /* ========== 假设检验表 ========== */
+  .hyp-table td { text-align: left; padding: 5px 8px; }
+  .hyp-table td.center { text-align: center; }
+  .support { color: #c0391b; font-weight: bold; }
+  .nosupport { color: #555; }
+
+  /* ========== 结论区块 ========== */
+  .conclusion { background: #f8f9fa; border-left: 3px solid #1a5276; padding: 15px 20px; margin-top: 30px; border-radius: 0 6px 6px 0; }
+  .conclusion ol li { margin: 8px 0; }
+
+  /* ========== 标签 ========== */
+  .tag-verified   { font-size: 9pt; background: #d5f5e3; color: #1e8449; border-radius: 3px; padding: 1px 5px; margin-left: 6px; }
+  .tag-inferred   { font-size: 9pt; background: #fef9e7; color: #b7950b; border-radius: 3px; padding: 1px 5px; margin-left: 6px; }
+</style>
+</head>
+<body>
+
+<h1>资本结构影响因素实证分析报告</h1>
+<div class="subtitle">样本：A 股上市公司 26 家 × 8 年（2009–2016）｜方法：混合 OLS + 面板 FE/RE + Hausman 检验</div>
+
+<!-- ============================================================ -->
+<h2>一、研究背景与变量说明</h2>
+<!-- ============================================================ -->
+
+<p>本研究以 A 股上市公司为样本，考察企业规模、盈利能力、成长性、资产有形性、非债务税盾、资产周转率、国有股比例、独立董事比例及管理层持股对资本结构（资产负债率）的影响，检验权衡理论（Trade-off Theory）与优序融资理论（Pecking Order Theory）在中国情境下的适用性。</p>
+
+<h3>表 1 &nbsp; 变量定义表</h3>
+<table>
+  <thead>
+    <tr><th>变量类型</th><th>变量符号</th><th>变量名称</th><th>定义与计算方式</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>因变量</td><td><i>LEV</i></td><td>资产负债率</td><td>总负债 ÷ 总资产</td></tr>
+    <tr><td rowspan="9">自变量</td><td><i>SIZE</i></td><td>企业规模</td><td>ln(资产总计)</td></tr>
+    <tr><td><i>ROA</i></td><td>盈利能力</td><td>总资产净利润率</td></tr>
+    <tr><td><i>GROWTH</i></td><td>成长性</td><td>营业收入增长率</td></tr>
+    <tr><td><i>TANG</i></td><td>资产有形性</td><td>（固定资产净额 + 存货净额）÷ 资产总计</td></tr>
+    <tr><td><i>NDTS</i></td><td>非债务税盾</td><td>固定资产折旧 ÷ 资产总计</td></tr>
+    <tr><td><i>TURN</i></td><td>资产周转率</td><td>总资产周转率</td></tr>
+    <tr><td><i>STATE</i></td><td>国有股比例</td><td>国有股股数 ÷ 总股数</td></tr>
+    <tr><td><i>INDEP</i></td><td>独立董事比例</td><td>独立董事人数 ÷ 董事总人数</td></tr>
+    <tr><td><i>MSHARE_LN</i></td><td>管理层持股（对数）</td><td>ln（管理层持股数量 + 1）</td></tr>
+  </tbody>
+</table>
+
+<!-- ============================================================ -->
+<h2>二、数据概况与描述性统计 <span class="tag-verified">VERIFIED</span></h2>
+<!-- ============================================================ -->
+
+<h3>2.1 数据处理说明</h3>
+<ul>
+  <li>原始样本：190 条观测（26 家公司 × 8 年，2009–2016）</li>
+  <li>剔除资产负债率 > 1 的异常样本（16 条，股东权益为负），剩余 <b>174 条</b></li>
+  <li>对全部连续变量进行 1%/99% 缩尾（Winsorize）处理，消除极端异常值影响</li>
+  <li>最终回归样本：<b>150 条</b>（因部分变量存在缺失值，完整回归样本小于 174）</li>
+</ul>
+
+<h3>表 2 &nbsp; 描述性统计</h3>
+<table>
+  <thead>
+    <tr>
+      <th>变量</th><th>N</th><th>均值</th><th>标准差</th>
+      <th>最小值</th><th>25%</th><th>中位数</th><th>75%</th><th>最大值</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td class="varname">LEV</td><td>174</td><td>0.4834</td><td>0.2270</td><td>0.0468</td><td>0.3286</td><td>0.4963</td><td>0.6360</td><td>0.9652</td></tr>
+    <tr><td class="varname">SIZE</td><td>174</td><td>22.2670</td><td>1.4544</td><td>18.9225</td><td>21.2302</td><td>22.1500</td><td>23.4910</td><td>25.1663</td></tr>
+    <tr><td class="varname">ROA</td><td>174</td><td>0.0672</td><td>0.1180</td><td>−0.0916</td><td>0.0126</td><td>0.0350</td><td>0.0761</td><td>0.6275</td></tr>
+    <tr><td class="varname">GROWTH</td><td>169</td><td>0.5593</td><td>2.2499</td><td>−0.6362</td><td>−0.0118</td><td>0.1235</td><td>0.4411</td><td>18.9253</td></tr>
+    <tr><td class="varname">TANG</td><td>174</td><td>0.3821</td><td>0.1548</td><td>0.0486</td><td>0.2685</td><td>0.3903</td><td>0.4850</td><td>0.7561</td></tr>
+    <tr><td class="varname">NDTS</td><td>174</td><td>0.0219</td><td>0.0124</td><td>0.0016</td><td>0.0125</td><td>0.0207</td><td>0.0300</td><td>0.0539</td></tr>
+    <tr><td class="varname">TURN</td><td>174</td><td>0.7350</td><td>0.6899</td><td>0.0643</td><td>0.2742</td><td>0.5779</td><td>0.9245</td><td>3.6611</td></tr>
+    <tr><td class="varname">STATE</td><td>174</td><td>0.0787</td><td>0.1780</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0129</td><td>0.7174</td></tr>
+    <tr><td class="varname">INDEP</td><td>173</td><td>0.3732</td><td>0.0455</td><td>0.3333</td><td>0.3333</td><td>0.3636</td><td>0.4286</td><td>0.5000</td></tr>
+    <tr><td class="varname">MSHARE_LN</td><td>154</td><td>7.8885</td><td>7.2500</td><td>0.0000</td><td>0.0000</td><td>9.5105</td><td>12.5052</td><td>19.4192</td></tr>
+  </tbody>
+</table>
+<p class="note">注：样本标准差（ddof=1），与 Stata summarize 一致。LEV 均值 0.4834，接近 A 股上市公司杠杆水平；STATE 中位数为 0，说明多数样本公司无国有股。</p>
+
+<!-- ============================================================ -->
+<h2>三、相关性分析 <span class="tag-verified">VERIFIED</span></h2>
+<!-- ============================================================ -->
+
+<p>下表报告 Pearson 相关系数，下三角为相关系数（括号内为显著性水平），上三角留空，对角线为 1。</p>
+
+<h3>表 3 &nbsp; Pearson 相关系数矩阵（N = 150）</h3>
+<table class="corr-table">
+  <thead>
+    <tr>
+      <th></th>
+      <th>(1)</th><th>(2)</th><th>(3)</th><th>(4)</th><th>(5)</th>
+      <th>(6)</th><th>(7)</th><th>(8)</th><th>(9)</th><th>(10)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- 行1: LEV -->
+    <tr>
+      <td class="varname">(1) LEV</td>
+      <td class="corr-diag">1</td>
+      <td class="corr-upper">—</td><td class="corr-upper">—</td><td class="corr-upper">—</td>
+      <td class="corr-upper">—</td><td class="corr-upper">—</td><td class="corr-upper">—</td>
+      <td class="corr-upper">—</td><td class="corr-upper">—</td><td class="corr-upper">—</td>
+    </tr>
+    <!-- 行2: SIZE -->
+    <tr>
+      <td class="varname">(2) SIZE</td>
+      <td>−0.005</td>
+      <td class="corr-diag">1</td>
+      <td class="corr-upper">—</td><td class="corr-upper">—</td><td class="corr-upper">—</td>
+      <td class="corr-upper">—</td><td class="corr-upper">—</td><td class="corr-upper">—</td>
+      <td class="corr-upper">—</td><td class="corr-upper">—</td>
+    </tr>
+    <!-- 行3: ROA -->
+    <tr>
+      <td class="varname">(3) ROA</td>
+      <td>−0.165**</td>
+      <td>−0.231***</td>
+      <td class="corr-diag">1</td>
+      <td class="corr-upper">—</td><td class="corr-upper">—</td><td class="corr-upper">—</td>
+      <td class="corr-upper">—</td><td class="corr-upper">—</td><td class="corr-upper">—</td>
+      <td class="corr-upper">—</td>
+    </tr>
+    <!-- 行4: GROWTH -->
+    <tr>
+      <td class="varname">(4) GROWTH</td>
+      <td>−0.075</td>
+      <td>−0.156*</td>
+      <td>0.303***</td>
+      <td class="corr-diag">1</td>
+      <td class="corr-upper">—</td><td class="corr-upper">—</td><td class="corr-upper">—</td>
+      <td class="corr-upper">—</td><td class="corr-upper">—</td><td class="corr-upper">—</td>
+    </tr>
+    <!-- 行5: TANG -->
+    <tr>
+      <td class="varname">(5) TANG</td>
+      <td>0.353***</td>
+      <td>−0.210**</td>
+      <td>−0.181**</td>
+      <td>−0.133*</td>
+      <td class="corr-diag">1</td>
+      <td class="corr-upper">—</td><td class="corr-upper">—</td><td class="corr-upper">—</td>
+      <td class="corr-upper">—</td><td class="corr-upper">—</td>
+    </tr>
+    <!-- 行6: NDTS -->
+    <tr>
+      <td class="varname">(6) NDTS</td>
+      <td>−0.096</td>
+      <td>−0.104</td>
+      <td>0.085</td>
+      <td>−0.034</td>
+      <td>0.463***</td>
+      <td class="corr-diag">1</td>
+      <td class="corr-upper">—</td><td class="corr-upper">—</td>
+      <td class="corr-upper">—</td><td class="corr-upper">—</td>
+    </tr>
+    <!-- 行7: TURN -->
+    <tr>
+      <td class="varname">(7) TURN</td>
+      <td>0.137*</td>
+      <td>0.234***</td>
+      <td>0.264***</td>
+      <td>0.132</td>
+      <td>0.033</td>
+      <td>0.253***</td>
+      <td class="corr-diag">1</td>
+      <td class="corr-upper">—</td><td class="corr-upper">—</td><td class="corr-upper">—</td>
+    </tr>
+    <!-- 行8: STATE -->
+    <tr>
+      <td class="varname">(8) STATE</td>
+      <td>−0.034</td>
+      <td>0.002</td>
+      <td>−0.015</td>
+      <td>−0.117</td>
+      <td>0.050</td>
+      <td>0.128</td>
+      <td>0.112</td>
+      <td class="corr-diag">1</td>
+      <td class="corr-upper">—</td><td class="corr-upper">—</td>
+    </tr>
+    <!-- 行9: INDEP -->
+    <tr>
+      <td class="varname">(9) INDEP</td>
+      <td>−0.111</td>
+      <td>−0.166**</td>
+      <td>0.009</td>
+      <td>−0.006</td>
+      <td>−0.024</td>
+      <td>−0.135*</td>
+      <td>−0.001</td>
+      <td>−0.097</td>
+      <td class="corr-diag">1</td>
+      <td class="corr-upper">—</td>
+    </tr>
+    <!-- 行10: MSHARE_LN -->
+    <tr>
+      <td class="varname">(10) MSHARE_LN</td>
+      <td>−0.268***</td>
+      <td>0.134</td>
+      <td>0.269***</td>
+      <td>0.153*</td>
+      <td>−0.282***</td>
+      <td>−0.253***</td>
+      <td>0.124</td>
+      <td>−0.245***</td>
+      <td>0.142*</td>
+      <td class="corr-diag">1</td>
+    </tr>
+  </tbody>
+</table>
+<p class="note">注：***p&lt;0.01，**p&lt;0.05，*p&lt;0.1（双尾检验）。所有变量两两最大相关系数为 0.463（TANG 与 NDTS），无严重多重共线性。</p>
+
+<!-- ============================================================ -->
+<h2>四、多重共线性检验（VIF）<span class="tag-verified">VERIFIED</span></h2>
+<!-- ============================================================ -->
+
+<h3>表 4 &nbsp; 方差膨胀因子（VIF）</h3>
+<table>
+  <thead><tr><th>变量</th><th>VIF</th><th>判断（阈值 = 5）</th></tr></thead>
+  <tbody>
+    <tr><td class="varname">SIZE</td><td>1.42</td><td>通过</td></tr>
+    <tr><td class="varname">ROA</td><td>1.56</td><td>通过</td></tr>
+    <tr><td class="varname">GROWTH</td><td>1.13</td><td>通过</td></tr>
+    <tr><td class="varname">TANG</td><td>1.54</td><td>通过</td></tr>
+    <tr><td class="varname">NDTS</td><td>1.40</td><td>通过</td></tr>
+    <tr><td class="varname">TURN</td><td>1.38</td><td>通过</td></tr>
+    <tr><td class="varname">STATE</td><td>1.06</td><td>通过</td></tr>
+    <tr><td class="varname">INDEP</td><td>1.07</td><td>通过</td></tr>
+    <tr><td class="varname">MSHARE_LN</td><td>1.41</td><td>通过</td></tr>
+  </tbody>
+</table>
+<p class="note">注：所有自变量 VIF 均远小于 5（最大 1.56），不存在多重共线性问题。</p>
+
+<!-- ============================================================ -->
+<h2>五、回归分析结果 <span class="tag-verified">VERIFIED</span></h2>
+<!-- ============================================================ -->
+
+<h3>表 5 &nbsp; 资本结构影响因素回归结果（因变量：LEV）</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th rowspan="2">变量</th>
+      <th>(1)<br>混合 OLS</th>
+      <th>(2)<br>固定效应 FE</th>
+      <th>(3)<br>随机效应 RE</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <!-- SIZE -->
+    <tr>
+      <td class="varname"><i>SIZE</i></td>
+      <td>−0.009</td>
+      <td>0.029</td>
+      <td>0.002</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td class="tstat">(−0.540)</td>
+      <td class="tstat">(0.725)</td>
+      <td class="tstat">(0.057)</td>
+    </tr>
+
+    <!-- ROA -->
+    <tr>
+      <td class="varname"><i>ROA</i></td>
+      <td>−0.262</td>
+      <td>−0.315**</td>
+      <td>−0.328**</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td class="tstat">(−0.953)</td>
+      <td class="tstat">(−2.547)</td>
+      <td class="tstat">(−2.589)</td>
+    </tr>
+
+    <!-- GROWTH -->
+    <tr>
+      <td class="varname"><i>GROWTH</i></td>
+      <td>−0.004</td>
+      <td>−0.001</td>
+      <td>−0.001</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td class="tstat">(−0.734)</td>
+      <td class="tstat">(−0.282)</td>
+      <td class="tstat">(−0.311)</td>
+    </tr>
+
+    <!-- TANG -->
+    <tr>
+      <td class="varname"><i>TANG</i></td>
+      <td>0.711***</td>
+      <td>0.171</td>
+      <td>0.294*</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td class="tstat">(6.021)</td>
+      <td class="tstat">(0.821)</td>
+      <td class="tstat">(1.779)</td>
+    </tr>
+
+    <!-- NDTS -->
+    <tr>
+      <td class="varname"><i>NDTS</i></td>
+      <td>−6.669***</td>
+      <td>−0.449</td>
+      <td>−2.291</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td class="tstat">(−3.877)</td>
+      <td class="tstat">(−0.160)</td>
+      <td class="tstat">(−1.020)</td>
+    </tr>
+
+    <!-- TURN -->
+    <tr>
+      <td class="varname"><i>TURN</i></td>
+      <td>0.100***</td>
+      <td>0.095**</td>
+      <td>0.079*</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td class="tstat">(2.940)</td>
+      <td class="tstat">(1.985)</td>
+      <td class="tstat">(1.884)</td>
+    </tr>
+
+    <!-- STATE -->
+    <tr>
+      <td class="varname"><i>STATE</i></td>
+      <td>−0.164*</td>
+      <td>−0.051</td>
+      <td>−0.092</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td class="tstat">(−1.875)</td>
+      <td class="tstat">(−0.480)</td>
+      <td class="tstat">(−0.896)</td>
+    </tr>
+
+    <!-- INDEP -->
+    <tr>
+      <td class="varname"><i>INDEP</i></td>
+      <td>−0.693*</td>
+      <td>−0.579</td>
+      <td>−0.671</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td class="tstat">(−1.809)</td>
+      <td class="tstat">(−1.098)</td>
+      <td class="tstat">(−1.287)</td>
+    </tr>
+
+    <!-- MSHARE_LN -->
+    <tr>
+      <td class="varname"><i>MSHARE_LN</i></td>
+      <td>−0.002</td>
+      <td>−0.005</td>
+      <td>−0.003</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td class="tstat">(−0.589)</td>
+      <td class="tstat">(−1.468)</td>
+      <td class="tstat">(−0.814)</td>
+    </tr>
+
+    <!-- 常数项 -->
+    <tr>
+      <td class="varname">_cons</td>
+      <td>0.771*</td>
+      <td>—</td>
+      <td>0.628</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td class="tstat">(1.740)</td>
+      <td class="tstat"></td>
+      <td class="tstat">(0.964)</td>
+    </tr>
+
+    <!-- 分隔行 -->
+    <tr style="border-top: 1px solid #ccc;">
+      <td class="varname">N</td>
+      <td>150</td><td>150</td><td>150</td>
+    </tr>
+    <tr>
+      <td class="varname">R²</td>
+      <td>0.298</td>
+      <td>0.240<br><span style="font-size:9.5pt;color:#555;">(within)</span></td>
+      <td>0.222<br><span style="font-size:9.5pt;color:#555;">(overall)</span></td>
+    </tr>
+    <tr>
+      <td class="varname">个体固定效应</td>
+      <td>否</td><td>是</td><td>—</td>
+    </tr>
+    <tr>
+      <td class="varname">标准误类型</td>
+      <td>HC1 稳健</td>
+      <td colspan="2">公司层面聚类</td>
+    </tr>
+  </tbody>
+</table>
+<p class="note">注：括号内为 t 值；***p&lt;0.01，**p&lt;0.05，*p&lt;0.1（双尾检验）。FE 模型不报告常数项（被个体固定效应吸收）。</p>
+
+<!-- ============================================================ -->
+<h2>六、模型选择：Hausman 检验 <span class="tag-verified">VERIFIED</span></h2>
+<!-- ============================================================ -->
+
+<p>Hausman 检验原假设为"个体效应与解释变量不相关（随机效应一致）"，备择为"个体效应与解释变量相关（应使用固定效应）"。</p>
+
+<h3>表 6 &nbsp; Hausman 检验结果</h3>
+<table>
+  <thead><tr><th>检验统计量</th><th>自由度</th><th>p 值</th><th>结论</th></tr></thead>
+  <tbody>
+    <tr><td>χ² = 7.686</td><td>9</td><td>0.566</td><td>不拒绝原假设，支持随机效应（RE）</td></tr>
+  </tbody>
+</table>
+<p class="note">注：p = 0.566 &gt; 0.05，不拒绝随机效应假设。但考虑到面板数据中企业个体特征（规模、行业）通常与解释变量相关，本报告同时汇报 FE 和 RE 结果，以 RE 为主要解读依据，FE 作为稳健性参照。<span class="tag-inferred">INFERRED</span></p>
+
+<!-- ============================================================ -->
+<h2>七、结果解读与假设检验 <span class="tag-verified">VERIFIED</span></h2>
+<!-- ============================================================ -->
+
+<h3>表 7 &nbsp; 假设检验汇总</h3>
+<table class="hyp-table">
+  <thead>
+    <tr><th>假设</th><th class="center">预期符号</th><th class="center">RE 系数</th><th class="center">是否支持</th><th>理论依据</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>H1：规模越大，杠杆率越高</td>
+      <td class="center">+</td>
+      <td class="center">+0.002（n.s.）</td>
+      <td class="center nosupport">不支持</td>
+      <td>市场势力假说，本样本未证实</td>
+    </tr>
+    <tr>
+      <td>H2：盈利能力越强，杠杆率越低（优序融资）</td>
+      <td class="center">−</td>
+      <td class="center support">−0.328**</td>
+      <td class="center support">支持</td>
+      <td>优序融资：盈利企业优先内部融资</td>
+    </tr>
+    <tr>
+      <td>H3：成长性越高，杠杆率越低</td>
+      <td class="center">−</td>
+      <td class="center">−0.001（n.s.）</td>
+      <td class="center nosupport">不支持</td>
+      <td>资产替代假说，本样本未证实</td>
+    </tr>
+    <tr>
+      <td>H4：资产有形性越高，杠杆率越高（担保价值）</td>
+      <td class="center">+</td>
+      <td class="center">+0.294*</td>
+      <td class="center support">部分支持</td>
+      <td>有形资产可作抵押，降低债务成本</td>
+    </tr>
+    <tr>
+      <td>H5：非债务税盾越高，杠杆率越低</td>
+      <td class="center">−</td>
+      <td class="center">−2.291（n.s.）</td>
+      <td class="center nosupport">OLS 支持；RE 不显著</td>
+      <td>折旧与利息抵扣的替代效应</td>
+    </tr>
+    <tr>
+      <td>H6：资产周转率越高，杠杆率越高</td>
+      <td class="center">+</td>
+      <td class="center support">+0.079*</td>
+      <td class="center support">支持</td>
+      <td>营运效率强，偿债能力高，可承载更多负债</td>
+    </tr>
+    <tr>
+      <td>H7：国有股比例越高，杠杆率越高</td>
+      <td class="center">+</td>
+      <td class="center">−0.092（n.s.）</td>
+      <td class="center nosupport">不支持</td>
+      <td>国企预算软约束，本样本未证实</td>
+    </tr>
+    <tr>
+      <td>H8：独立董事比例越高，杠杆率越低</td>
+      <td class="center">−</td>
+      <td class="center">−0.671（n.s.）</td>
+      <td class="center nosupport">OLS 边际显著；RE 不显著</td>
+      <td>独立董事监督效应</td>
+    </tr>
+  </tbody>
+</table>
+<p class="note">注：n.s. 表示不显著（p≥0.1）。以 RE 结果为主要解读依据。</p>
+
+<!-- ============================================================ -->
+<div class="conclusion">
+<h2>八、主要结论</h2>
+
+<ol>
+  <li>
+    <b>盈利能力（ROA）对资本结构有稳健的负向影响</b>（RE: β = −0.328，p&lt;0.05；FE: β = −0.315，p&lt;0.05），FE 与 RE 结果高度一致，结论稳健。<b>支持优序融资理论</b>——盈利企业优先使用内部留存收益，减少外部债务。[VERIFIED]
+  </li>
+  <li>
+    <b>资产周转率（TURN）对资本结构有正向影响</b>（RE: β = 0.079，p&lt;0.1；FE: β = 0.095，p&lt;0.05），说明资产营运效率高的企业具备更强偿债保障能力，可承载更高杠杆。[VERIFIED]
+  </li>
+  <li>
+    <b>资产有形性（TANG）在混合 OLS 中高度显著为正</b>（β = 0.711，p&lt;0.01），RE 中边际显著（β = 0.294，p&lt;0.1），FE 中不显著，说明有形资产的担保效应主要体现为<b>横截面差异</b>（不同企业间），而非时序变动效应。<b>部分支持担保价值理论</b>。[VERIFIED]
+  </li>
+  <li>
+    <b>非债务税盾（NDTS）在混合 OLS 中高度显著为负</b>（β = −6.669，p&lt;0.01），RE/FE 中不显著，同样来源于企业间差异。OLS 结果支持替代效应假说。[INFERRED]
+  </li>
+  <li>
+    <b>企业规模、成长性、国有股比例、独立董事比例、管理层持股</b>在本样本中均未通过显著性检验。可能原因：样本量较小（N = 26 家公司），统计检验力不足；或样本期（2009–2016）中国资本市场的特殊环境所致。[INFERRED]
+  </li>
+  <li>
+    <b>模型选择</b>：Hausman 检验（χ² = 7.686，p = 0.566）不拒绝随机效应，但 ROA 和 TURN 的显著性结论在 FE 与 RE 中均一致，核心结论对模型选择具有稳健性。
+  </li>
+</ol>
+
+<p style="margin-top:12px;"><b>稳健性提示</b>：本研究样本量较小（N = 150），统计显著结论有限。建议后续研究扩大样本规模或延长时间窗口以提升检验力。</p>
+</div>
+
+<p style="margin-top:40px; font-size:10pt; color:#888;">
+  报告生成时间：2026-06-30 ｜
+  分析方法：混合 OLS（HC1）+ 面板 FE/RE（公司层面聚类标准误）+ Hausman 检验 ｜
+  计算引擎：empirical-research-agent engine/（Python statsmodels + linearmodels）｜
+  所有数字来自确定性计算脚本，不含估算或心算
+</p>
+
+</body>
+</html>

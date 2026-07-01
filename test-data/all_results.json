@@ -1,0 +1,1153 @@
+{
+  "descriptive": {
+    "type": "descriptive",
+    "vars": [
+      {
+        "name": "LEV",
+        "obs": 174,
+        "mean": 0.483366,
+        "sd": 0.227036,
+        "min": 0.046792,
+        "p25": 0.328578,
+        "median": 0.496267,
+        "p75": 0.636036,
+        "max": 0.965161,
+        "skew": -0.015304,
+        "kurt": -0.492705
+      },
+      {
+        "name": "SIZE",
+        "obs": 174,
+        "mean": 22.266962,
+        "sd": 1.454419,
+        "min": 18.922548,
+        "p25": 21.230189,
+        "median": 22.149991,
+        "p75": 23.491034,
+        "max": 25.166346,
+        "skew": -0.133366,
+        "kurt": -0.602969
+      },
+      {
+        "name": "ROA",
+        "obs": 174,
+        "mean": 0.067196,
+        "sd": 0.117955,
+        "min": -0.09163,
+        "p25": 0.012627,
+        "median": 0.03499,
+        "p75": 0.076084,
+        "max": 0.627486,
+        "skew": 2.845061,
+        "kurt": 9.832315
+      },
+      {
+        "name": "GROWTH",
+        "obs": 169,
+        "mean": 0.559261,
+        "sd": 2.24986,
+        "min": -0.636153,
+        "p25": -0.01177,
+        "median": 0.123533,
+        "p75": 0.441087,
+        "max": 18.925267,
+        "skew": 7.126919,
+        "kurt": 54.326429
+      },
+      {
+        "name": "TANG",
+        "obs": 174,
+        "mean": 0.382079,
+        "sd": 0.154791,
+        "min": 0.048597,
+        "p25": 0.268492,
+        "median": 0.390288,
+        "p75": 0.485007,
+        "max": 0.756078,
+        "skew": 0.008201,
+        "kurt": -0.372096
+      },
+      {
+        "name": "NDTS",
+        "obs": 174,
+        "mean": 0.02187,
+        "sd": 0.012444,
+        "min": 0.001575,
+        "p25": 0.012547,
+        "median": 0.02072,
+        "p75": 0.030002,
+        "max": 0.053892,
+        "skew": 0.431535,
+        "kurt": -0.412845
+      },
+      {
+        "name": "TURN",
+        "obs": 174,
+        "mean": 0.734955,
+        "sd": 0.689893,
+        "min": 0.064279,
+        "p25": 0.274176,
+        "median": 0.577925,
+        "p75": 0.924506,
+        "max": 3.661082,
+        "skew": 2.411109,
+        "kurt": 6.764765
+      },
+      {
+        "name": "STATE",
+        "obs": 174,
+        "mean": 0.078706,
+        "sd": 0.178018,
+        "min": 0.0,
+        "p25": 0.0,
+        "median": 0.0,
+        "p75": 0.012885,
+        "max": 0.717437,
+        "skew": 2.313008,
+        "kurt": 4.241476
+      },
+      {
+        "name": "INDEP",
+        "obs": 173,
+        "mean": 0.373222,
+        "sd": 0.045455,
+        "min": 0.333333,
+        "p25": 0.333333,
+        "median": 0.363636,
+        "p75": 0.428571,
+        "max": 0.5,
+        "skew": 0.763043,
+        "kurt": -0.675374
+      },
+      {
+        "name": "MSHARE_LN",
+        "obs": 154,
+        "mean": 7.888533,
+        "sd": 7.250035,
+        "min": 0.0,
+        "p25": 0.0,
+        "median": 9.510519,
+        "p75": 12.505219,
+        "max": 19.419175,
+        "skew": 0.149675,
+        "kurt": -1.463334
+      }
+    ],
+    "notes": "样本标准差（ddof=1），与 Stata summarize 一致"
+  },
+  "correlation": {
+    "type": "correlation",
+    "method": "pearson",
+    "vars": [
+      "LEV",
+      "SIZE",
+      "ROA",
+      "GROWTH",
+      "TANG",
+      "NDTS",
+      "TURN",
+      "STATE",
+      "INDEP",
+      "MSHARE_LN"
+    ],
+    "matrix": [
+      [
+        {
+          "coef": 1.0,
+          "p_value": 0.0,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.005232,
+          "p_value": 0.949336,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.165129,
+          "p_value": 0.043449,
+          "sig": "**",
+          "n": 150
+        },
+        {
+          "coef": -0.07474,
+          "p_value": 0.363355,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": 0.35344,
+          "p_value": 9e-06,
+          "sig": "***",
+          "n": 150
+        },
+        {
+          "coef": -0.095808,
+          "p_value": 0.243505,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": 0.136629,
+          "p_value": 0.095477,
+          "sig": "*",
+          "n": 150
+        },
+        {
+          "coef": -0.034175,
+          "p_value": 0.678016,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.110511,
+          "p_value": 0.178211,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.267593,
+          "p_value": 0.000931,
+          "sig": "***",
+          "n": 150
+        }
+      ],
+      [
+        {
+          "coef": -0.005232,
+          "p_value": 0.949336,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": 1.0,
+          "p_value": 0.0,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.231256,
+          "p_value": 0.004409,
+          "sig": "***",
+          "n": 150
+        },
+        {
+          "coef": -0.155997,
+          "p_value": 0.056616,
+          "sig": "*",
+          "n": 150
+        },
+        {
+          "coef": -0.209679,
+          "p_value": 0.010017,
+          "sig": "**",
+          "n": 150
+        },
+        {
+          "coef": -0.104384,
+          "p_value": 0.203652,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": 0.234449,
+          "p_value": 0.00388,
+          "sig": "***",
+          "n": 150
+        },
+        {
+          "coef": 0.001834,
+          "p_value": 0.982231,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.166436,
+          "p_value": 0.041792,
+          "sig": "**",
+          "n": 150
+        },
+        {
+          "coef": 0.133731,
+          "p_value": 0.102785,
+          "sig": "",
+          "n": 150
+        }
+      ],
+      [
+        {
+          "coef": -0.165129,
+          "p_value": 0.043449,
+          "sig": "**",
+          "n": 150
+        },
+        {
+          "coef": -0.231256,
+          "p_value": 0.004409,
+          "sig": "***",
+          "n": 150
+        },
+        {
+          "coef": 1.0,
+          "p_value": 0.0,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": 0.302683,
+          "p_value": 0.000167,
+          "sig": "***",
+          "n": 150
+        },
+        {
+          "coef": -0.148852,
+          "p_value": 0.069073,
+          "sig": "*",
+          "n": 150
+        },
+        {
+          "coef": -0.002255,
+          "p_value": 0.978151,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": 0.245303,
+          "p_value": 0.002482,
+          "sig": "***",
+          "n": 150
+        },
+        {
+          "coef": 0.018843,
+          "p_value": 0.818975,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": 0.054498,
+          "p_value": 0.507731,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": 0.316299,
+          "p_value": 8e-05,
+          "sig": "***",
+          "n": 150
+        }
+      ],
+      [
+        {
+          "coef": -0.07474,
+          "p_value": 0.363355,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.155997,
+          "p_value": 0.056616,
+          "sig": "*",
+          "n": 150
+        },
+        {
+          "coef": 0.302683,
+          "p_value": 0.000167,
+          "sig": "***",
+          "n": 150
+        },
+        {
+          "coef": 1.0,
+          "p_value": 0.0,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.07805,
+          "p_value": 0.342437,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.019911,
+          "p_value": 0.808904,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": 0.066448,
+          "p_value": 0.419149,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.047369,
+          "p_value": 0.564871,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.018224,
+          "p_value": 0.824825,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": 0.043172,
+          "p_value": 0.599887,
+          "sig": "",
+          "n": 150
+        }
+      ],
+      [
+        {
+          "coef": 0.35344,
+          "p_value": 9e-06,
+          "sig": "***",
+          "n": 150
+        },
+        {
+          "coef": -0.209679,
+          "p_value": 0.010017,
+          "sig": "**",
+          "n": 150
+        },
+        {
+          "coef": -0.148852,
+          "p_value": 0.069073,
+          "sig": "*",
+          "n": 150
+        },
+        {
+          "coef": -0.07805,
+          "p_value": 0.342437,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": 1.0,
+          "p_value": 0.0,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": 0.467078,
+          "p_value": 0.0,
+          "sig": "***",
+          "n": 150
+        },
+        {
+          "coef": -0.000193,
+          "p_value": 0.998129,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": 0.133381,
+          "p_value": 0.103697,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.051861,
+          "p_value": 0.528515,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.313216,
+          "p_value": 9.5e-05,
+          "sig": "***",
+          "n": 150
+        }
+      ],
+      [
+        {
+          "coef": -0.095808,
+          "p_value": 0.243505,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.104384,
+          "p_value": 0.203652,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.002255,
+          "p_value": 0.978151,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.019911,
+          "p_value": 0.808904,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": 0.467078,
+          "p_value": 0.0,
+          "sig": "***",
+          "n": 150
+        },
+        {
+          "coef": 1.0,
+          "p_value": 0.0,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": 0.153495,
+          "p_value": 0.060748,
+          "sig": "*",
+          "n": 150
+        },
+        {
+          "coef": 0.107834,
+          "p_value": 0.189021,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.062676,
+          "p_value": 0.446089,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": 0.010531,
+          "p_value": 0.898225,
+          "sig": "",
+          "n": 150
+        }
+      ],
+      [
+        {
+          "coef": 0.136629,
+          "p_value": 0.095477,
+          "sig": "*",
+          "n": 150
+        },
+        {
+          "coef": 0.234449,
+          "p_value": 0.00388,
+          "sig": "***",
+          "n": 150
+        },
+        {
+          "coef": 0.245303,
+          "p_value": 0.002482,
+          "sig": "***",
+          "n": 150
+        },
+        {
+          "coef": 0.066448,
+          "p_value": 0.419149,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.000193,
+          "p_value": 0.998129,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": 0.153495,
+          "p_value": 0.060748,
+          "sig": "*",
+          "n": 150
+        },
+        {
+          "coef": 1.0,
+          "p_value": 0.0,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": 0.152642,
+          "p_value": 0.062213,
+          "sig": "*",
+          "n": 150
+        },
+        {
+          "coef": 0.037194,
+          "p_value": 0.651355,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.096167,
+          "p_value": 0.241735,
+          "sig": "",
+          "n": 150
+        }
+      ],
+      [
+        {
+          "coef": -0.034175,
+          "p_value": 0.678016,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": 0.001834,
+          "p_value": 0.982231,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": 0.018843,
+          "p_value": 0.818975,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.047369,
+          "p_value": 0.564871,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": 0.133381,
+          "p_value": 0.103697,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": 0.107834,
+          "p_value": 0.189021,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": 0.152642,
+          "p_value": 0.062213,
+          "sig": "*",
+          "n": 150
+        },
+        {
+          "coef": 1.0,
+          "p_value": 0.0,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.096973,
+          "p_value": 0.237793,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.104528,
+          "p_value": 0.203023,
+          "sig": "",
+          "n": 150
+        }
+      ],
+      [
+        {
+          "coef": -0.110511,
+          "p_value": 0.178211,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.166436,
+          "p_value": 0.041792,
+          "sig": "**",
+          "n": 150
+        },
+        {
+          "coef": 0.054498,
+          "p_value": 0.507731,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.018224,
+          "p_value": 0.824825,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.051861,
+          "p_value": 0.528515,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.062676,
+          "p_value": 0.446089,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": 0.037194,
+          "p_value": 0.651355,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.096973,
+          "p_value": 0.237793,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": 1.0,
+          "p_value": 0.0,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.042924,
+          "p_value": 0.601981,
+          "sig": "",
+          "n": 150
+        }
+      ],
+      [
+        {
+          "coef": -0.267593,
+          "p_value": 0.000931,
+          "sig": "***",
+          "n": 150
+        },
+        {
+          "coef": 0.133731,
+          "p_value": 0.102785,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": 0.316299,
+          "p_value": 8e-05,
+          "sig": "***",
+          "n": 150
+        },
+        {
+          "coef": 0.043172,
+          "p_value": 0.599887,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.313216,
+          "p_value": 9.5e-05,
+          "sig": "***",
+          "n": 150
+        },
+        {
+          "coef": 0.010531,
+          "p_value": 0.898225,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.096167,
+          "p_value": 0.241735,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.104528,
+          "p_value": 0.203023,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": -0.042924,
+          "p_value": 0.601981,
+          "sig": "",
+          "n": 150
+        },
+        {
+          "coef": 1.0,
+          "p_value": 0.0,
+          "sig": "",
+          "n": 150
+        }
+      ]
+    ],
+    "notes": "***p<0.01, **p<0.05, *p<0.1，与 Stata pwcorr 一致"
+  },
+  "diagnostics": {
+    "n": 150,
+    "vif": {
+      "SIZE": 1.42,
+      "ROA": 1.56,
+      "GROWTH": 1.13,
+      "TANG": 1.54,
+      "NDTS": 1.4,
+      "TURN": 1.38,
+      "STATE": 1.06,
+      "INDEP": 1.07,
+      "MSHARE_LN": 1.41
+    },
+    "diagnostics": {
+      "breusch_pagan_pvalue": 0.0004,
+      "heteroskedasticity": "存在异方差"
+    }
+  },
+  "ols": {
+    "type": "ols",
+    "dep_var": "LEV",
+    "indep_vars": [
+      "SIZE",
+      "ROA",
+      "GROWTH",
+      "TANG",
+      "NDTS",
+      "TURN",
+      "STATE",
+      "INDEP",
+      "MSHARE_LN"
+    ],
+    "control_vars": [],
+    "n": 150,
+    "r2": 0.297641,
+    "r2_adj": 0.25249,
+    "f_stat": 10.4352,
+    "f_pvalue": 0.0,
+    "f_stat_unreliable": false,
+    "df_model": 9,
+    "df_resid": 140,
+    "se_type": "robust(HC1)",
+    "coefficients": [
+      {
+        "variable": "_cons",
+        "coef": 0.770918,
+        "std_error": 0.443033,
+        "t_stat": 1.7401,
+        "p_value": 0.081843,
+        "sig": "*",
+        "ci_lower": -0.097411,
+        "ci_upper": 1.639248
+      },
+      {
+        "variable": "SIZE",
+        "coef": -0.008479,
+        "std_error": 0.015703,
+        "t_stat": -0.54,
+        "p_value": 0.589216,
+        "sig": "",
+        "ci_lower": -0.039256,
+        "ci_upper": 0.022298
+      },
+      {
+        "variable": "ROA",
+        "coef": -0.261735,
+        "std_error": 0.274657,
+        "t_stat": -0.953,
+        "p_value": 0.340614,
+        "sig": "",
+        "ci_lower": -0.800052,
+        "ci_upper": 0.276582
+      },
+      {
+        "variable": "GROWTH",
+        "coef": -0.00442,
+        "std_error": 0.00602,
+        "t_stat": -0.7342,
+        "p_value": 0.462819,
+        "sig": "",
+        "ci_lower": -0.01622,
+        "ci_upper": 0.007379
+      },
+      {
+        "variable": "TANG",
+        "coef": 0.711321,
+        "std_error": 0.118146,
+        "t_stat": 6.0207,
+        "p_value": 0.0,
+        "sig": "***",
+        "ci_lower": 0.479759,
+        "ci_upper": 0.942883
+      },
+      {
+        "variable": "NDTS",
+        "coef": -6.669074,
+        "std_error": 1.720355,
+        "t_stat": -3.8766,
+        "p_value": 0.000106,
+        "sig": "***",
+        "ci_lower": -10.040909,
+        "ci_upper": -3.29724
+      },
+      {
+        "variable": "TURN",
+        "coef": 0.099988,
+        "std_error": 0.034006,
+        "t_stat": 2.9403,
+        "p_value": 0.003279,
+        "sig": "***",
+        "ci_lower": 0.033337,
+        "ci_upper": 0.166639
+      },
+      {
+        "variable": "STATE",
+        "coef": -0.164437,
+        "std_error": 0.087693,
+        "t_stat": -1.8751,
+        "p_value": 0.060772,
+        "sig": "*",
+        "ci_lower": -0.336312,
+        "ci_upper": 0.007438
+      },
+      {
+        "variable": "INDEP",
+        "coef": -0.692743,
+        "std_error": 0.382985,
+        "t_stat": -1.8088,
+        "p_value": 0.070482,
+        "sig": "*",
+        "ci_lower": -1.44338,
+        "ci_upper": 0.057895
+      },
+      {
+        "variable": "MSHARE_LN",
+        "coef": -0.001802,
+        "std_error": 0.003061,
+        "t_stat": -0.5889,
+        "p_value": 0.555925,
+        "sig": "",
+        "ci_lower": -0.007801,
+        "ci_upper": 0.004196
+      }
+    ],
+    "categorical_vars": [],
+    "dummy_vars": [],
+    "time_effects": false,
+    "notes": "括号内为t值，robust(HC1)标准误，***p<0.01, **p<0.05, *p<0.1"
+  },
+  "fe": {
+    "type": "fe",
+    "dep_var": "LEV",
+    "indep_vars": [
+      "SIZE",
+      "ROA",
+      "GROWTH",
+      "TANG",
+      "NDTS",
+      "TURN",
+      "STATE",
+      "INDEP",
+      "MSHARE_LN"
+    ],
+    "control_vars": [],
+    "entity_var": "code",
+    "time_var": "year",
+    "time_effects": false,
+    "n": 150,
+    "n_entities": 25,
+    "r2_within": 0.239506,
+    "r2_between": 0.860718,
+    "r2_overall": 0.832636,
+    "f_stat": 4.0592,
+    "f_pvalue": 0.000151,
+    "se_type": "clustered",
+    "coefficients": [
+      {
+        "variable": "SIZE",
+        "coef": 0.02876,
+        "std_error": 0.039695,
+        "t_stat": 0.7245,
+        "p_value": 0.470206,
+        "sig": ""
+      },
+      {
+        "variable": "ROA",
+        "coef": -0.31495,
+        "std_error": 0.123669,
+        "t_stat": -2.5467,
+        "p_value": 0.012184,
+        "sig": "**"
+      },
+      {
+        "variable": "GROWTH",
+        "coef": -0.000844,
+        "std_error": 0.002997,
+        "t_stat": -0.2816,
+        "p_value": 0.778743,
+        "sig": ""
+      },
+      {
+        "variable": "TANG",
+        "coef": 0.171227,
+        "std_error": 0.208599,
+        "t_stat": 0.8208,
+        "p_value": 0.413418,
+        "sig": ""
+      },
+      {
+        "variable": "NDTS",
+        "coef": -0.449063,
+        "std_error": 2.81482,
+        "t_stat": -0.1595,
+        "p_value": 0.873525,
+        "sig": ""
+      },
+      {
+        "variable": "TURN",
+        "coef": 0.095134,
+        "std_error": 0.047935,
+        "t_stat": 1.9847,
+        "p_value": 0.049542,
+        "sig": "**"
+      },
+      {
+        "variable": "STATE",
+        "coef": -0.050918,
+        "std_error": 0.106043,
+        "t_stat": -0.4802,
+        "p_value": 0.632017,
+        "sig": ""
+      },
+      {
+        "variable": "INDEP",
+        "coef": -0.57878,
+        "std_error": 0.527126,
+        "t_stat": -1.098,
+        "p_value": 0.274482,
+        "sig": ""
+      },
+      {
+        "variable": "MSHARE_LN",
+        "coef": -0.004834,
+        "std_error": 0.003294,
+        "t_stat": -1.4676,
+        "p_value": 0.144913,
+        "sig": ""
+      }
+    ],
+    "hausman": {
+      "chi2": 7.6863,
+      "df": 9,
+      "p_value": 0.566038,
+      "conclusion": "不拒绝随机效应"
+    },
+    "stata_equivalent": "xtreg LEV SIZE ROA GROWTH TANG NDTS TURN STATE INDEP MSHARE_LN, fe",
+    "dropped_vars": [],
+    "categorical_vars": [],
+    "dummy_vars": [],
+    "notes": "括号内为t值，clustered标准误，***p<0.01, **p<0.05, *p<0.1。"
+  },
+  "re": {
+    "type": "re",
+    "dep_var": "LEV",
+    "indep_vars": [
+      "SIZE",
+      "ROA",
+      "GROWTH",
+      "TANG",
+      "NDTS",
+      "TURN",
+      "STATE",
+      "INDEP",
+      "MSHARE_LN"
+    ],
+    "control_vars": [],
+    "entity_var": "code",
+    "time_var": "year",
+    "time_effects": false,
+    "n": 150,
+    "n_entities": 25,
+    "r2_within": 0.228064,
+    "r2_between": 0.207648,
+    "r2_overall": 0.222089,
+    "f_stat": 5.0823,
+    "f_pvalue": 6e-06,
+    "se_type": "clustered",
+    "coefficients": [
+      {
+        "variable": "_cons",
+        "coef": 0.628203,
+        "std_error": 0.651509,
+        "t_stat": 0.9642,
+        "p_value": 0.336594,
+        "sig": ""
+      },
+      {
+        "variable": "SIZE",
+        "coef": 0.00156,
+        "std_error": 0.02728,
+        "t_stat": 0.0572,
+        "p_value": 0.954475,
+        "sig": ""
+      },
+      {
+        "variable": "ROA",
+        "coef": -0.327964,
+        "std_error": 0.126687,
+        "t_stat": -2.5888,
+        "p_value": 0.010649,
+        "sig": "**"
+      },
+      {
+        "variable": "GROWTH",
+        "coef": -0.000898,
+        "std_error": 0.002893,
+        "t_stat": -0.3106,
+        "p_value": 0.756595,
+        "sig": ""
+      },
+      {
+        "variable": "TANG",
+        "coef": 0.293914,
+        "std_error": 0.165175,
+        "t_stat": 1.7794,
+        "p_value": 0.077342,
+        "sig": "*"
+      },
+      {
+        "variable": "NDTS",
+        "coef": -2.290476,
+        "std_error": 2.245576,
+        "t_stat": -1.02,
+        "p_value": 0.30949,
+        "sig": ""
+      },
+      {
+        "variable": "TURN",
+        "coef": 0.078798,
+        "std_error": 0.041834,
+        "t_stat": 1.8836,
+        "p_value": 0.061694,
+        "sig": "*"
+      },
+      {
+        "variable": "STATE",
+        "coef": -0.091768,
+        "std_error": 0.102479,
+        "t_stat": -0.8955,
+        "p_value": 0.372069,
+        "sig": ""
+      },
+      {
+        "variable": "INDEP",
+        "coef": -0.671085,
+        "std_error": 0.521626,
+        "t_stat": -1.2865,
+        "p_value": 0.200383,
+        "sig": ""
+      },
+      {
+        "variable": "MSHARE_LN",
+        "coef": -0.002692,
+        "std_error": 0.003306,
+        "t_stat": -0.8143,
+        "p_value": 0.416856,
+        "sig": ""
+      }
+    ],
+    "hausman": null,
+    "stata_equivalent": "xtreg LEV SIZE ROA GROWTH TANG NDTS TURN STATE INDEP MSHARE_LN, re",
+    "dropped_vars": [],
+    "categorical_vars": [],
+    "dummy_vars": [],
+    "notes": "括号内为t值，clustered标准误，***p<0.01, **p<0.05, *p<0.1。"
+  }
+}

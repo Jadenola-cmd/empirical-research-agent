@@ -1,0 +1,167 @@
+﻿{
+  "product": "Empirical Research Agent",
+  "version": "1.0.0",
+  "description": "机器可读能力注册表。method_selection.md 决策树终点指向此文件，Agent 据此判断方法可用性和定价层级。",
+
+  "engine": {
+    "descriptive": {
+      "status": "available",
+      "tier": "free",
+      "category": "exploration",
+      "description": "描述性统计（N/均值/标准差/分位数/偏度/峰度）",
+      "requires": [],
+      "produces": ["summary_stats", "distribution"]
+    },
+    "correlation": {
+      "status": "available",
+      "tier": "free",
+      "category": "exploration",
+      "description": "相关系数矩阵（Pearson，含显著性星号）",
+      "requires": ["numeric_variables_min_2"],
+      "produces": ["correlation_matrix"]
+    },
+    "ols": {
+      "status": "available",
+      "tier": "pro",
+      "category": "regression",
+      "description": "OLS多元线性回归（含VIF/R²/F检验）",
+      "requires": ["continuous_dv", "numeric_iv_min_1"],
+      "produces": ["coefficients", "model_stats", "vif"],
+      "robustness_checks": ["winsorize", "vif", "breusch_pagan", "reset_test"]
+    },
+    "panel": {
+      "status": "available",
+      "tier": "pro",
+      "category": "regression",
+      "description": "面板固定效应/随机效应 + Hausman检验",
+      "requires": ["panel_structure", "entity_col", "time_col"],
+      "produces": ["fe_coefficients", "re_coefficients", "hausman_test"],
+      "robustness_checks": ["cluster_se", "lagged_iv", "fe_vs_re"]
+    },
+    "did": {
+      "status": "available",
+      "tier": "premium",
+      "category": "causal",
+      "description": "双重差分法（标准DID，含平行趋势检验）",
+      "requires": ["panel_structure", "binary_treatment", "pre_post_periods"],
+      "produces": ["did_coefficient", "parallel_trends_plot", "event_study"],
+      "robustness_checks": ["parallel_trends", "placebo_test", "staggered_did"]
+    },
+    "psm": {
+      "status": "available",
+      "tier": "premium",
+      "category": "causal",
+      "description": "倾向得分匹配（最近邻/核匹配，含平衡性检验）",
+      "requires": ["binary_treatment", "covariates_for_ps"],
+      "produces": ["att", "balance_table", "propensity_distribution"],
+      "robustness_checks": ["caliper_sensitivity", "alternative_matching", "rosenbaum_bounds"]
+    },
+    "psm_did": {
+      "status": "available",
+      "tier": "premium",
+      "category": "causal",
+      "description": "PSM-DID（匹配后双重差分）",
+      "requires": ["panel_structure", "binary_treatment", "covariates_for_ps"],
+      "produces": ["psm_did_att", "balance_after_match", "common_support"],
+      "robustness_checks": ["alternative_matching", "placebo_test"]
+    },
+    "iv": {
+      "status": "beta",
+      "tier": "premium",
+      "category": "causal",
+      "description": "工具变量法（2SLS，含弱工具变量检验）",
+      "requires": ["instrumental_variable", "endogenous_regressor"],
+      "produces": ["iv_coefficients", "first_stage_f", "wu_hausman_test"],
+      "robustness_checks": ["weak_iv_test", "overidentification_test"],
+      "notes": "当前仅支持单一工具变量；多工具变量和LIML在roadmap中"
+    },
+    "rd": {
+      "status": "planned",
+      "tier": "premium",
+      "category": "causal",
+      "description": "断点回归设计（Sharp RD，含带宽选择）",
+      "requires": ["running_variable", "cutoff_value", "continuous_dv"],
+      "produces": ["rd_estimate", "bandwidth_selector", "rd_plot"],
+      "robustness_checks": ["alternative_bandwidth", "polynomial_order", "mccrary_test"]
+    },
+    "mediation": {
+      "status": "available",
+      "tier": "pro",
+      "category": "mechanism",
+      "description": "中介效应分析（Baron-Kenny三步法 + Sobel检验）",
+      "requires": ["continuous_mediator", "continuous_dv"],
+      "produces": ["step_coefficients", "sobel_test", "mediation_path"],
+      "robustness_checks": ["bootstrap_mediation", "alternative_mediator"]
+    },
+    "moderation": {
+      "status": "available",
+      "tier": "pro",
+      "category": "mechanism",
+      "description": "调节效应分析（含交互项 + 简单斜率检验）",
+      "requires": ["moderator_variable", "continuous_dv"],
+      "produces": ["interaction_coefficient", "simple_slopes", "johnson_neyman"],
+      "robustness_checks": ["mean_centering", "alternative_moderator"]
+    },
+    "heterogeneity": {
+      "status": "available",
+      "tier": "pro",
+      "category": "mechanism",
+      "description": "异质性分析（分组回归对比 / 交互项检验）",
+      "requires": ["group_variable", "base_regression_spec"],
+      "produces": ["group_coefficients", "chow_test", "group_comparison"],
+      "robustness_checks": ["alternative_grouping", "interaction_test"]
+    },
+    "robustness": {
+      "status": "available",
+      "tier": "premium",
+      "category": "validation",
+      "description": "稳健性检验编排器（按方法自动选择检验项）",
+      "requires": ["completed_primary_analysis"],
+      "produces": ["robustness_report"],
+      "notes": "此方法编排其他方法的robustness_checks列表，不独立计算"
+    },
+    "diagnostics": {
+      "status": "available",
+      "tier": "free",
+      "category": "validation",
+      "description": "回归诊断（异方差/多重共线性/模型设定）",
+      "requires": ["fitted_model"],
+      "produces": ["diagnostic_report"]
+    },
+    "visualization": {
+      "status": "available",
+      "tier": "pro",
+      "category": "output",
+      "description": "可视化输出（系数图/趋势图/分布图）",
+      "requires": ["analysis_results"],
+      "produces": ["coefficient_plot", "trend_plot", "distribution_plot"]
+    }
+  },
+
+  "tiers": {
+    "free": {
+      "description": "数据探索层：描述统计、相关性、数据诊断",
+      "methods": ["descriptive", "correlation", "diagnostics"],
+      "max_variables": 20,
+      "max_observations": 10000
+    },
+    "pro": {
+      "description": "回归分析层：OLS、面板、调节/中介/异质性",
+      "methods": ["ols", "panel", "mediation", "moderation", "heterogeneity", "visualization"],
+      "max_variables": 50,
+      "max_observations": 100000
+    },
+    "premium": {
+      "description": "因果推断层：DID、PSM、IV、RD + 稳健性检验",
+      "methods": ["did", "psm", "psm_did", "iv", "rd", "robustness"],
+      "max_variables": 100,
+      "max_observations": 500000
+    }
+  },
+
+  "output_templates": {
+    "thesis": { "file": "templates/thesis.md", "description": "学位论文附录格式" },
+    "paper": { "file": "templates/paper.md", "description": "期刊投稿格式（三线表+星号）" },
+    "report": { "file": "templates/report.md", "description": "内部汇报格式（可视化+要点）" }
+  }
+}

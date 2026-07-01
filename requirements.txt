@@ -1,0 +1,24 @@
+﻿# Empirical Research Agent - Python Dependencies
+# ==============================================
+
+# ---- Core (required for all methods) ----
+pandas>=2.0.0
+numpy>=1.24.0
+pyarrow>=12.0.0          # parquet read/write
+
+# ---- Statistical Modeling (ols, panel, did, diagnostics) ----
+statsmodels>=0.14.0
+scipy>=1.10.0
+linearmodels>=5.0       # panel FE/RE + Hausman
+
+# ---- Causal Inference (psm) ----
+scikit-learn>=1.3.0
+
+# ---- Visualization (optional) ----
+matplotlib>=3.7.0
+
+# ---- Data I/O ----
+openpyxl>=3.1.0          # Excel read support
+
+# ---- Optional: Word Export ----
+# python-docx>=0.8.11    # uncomment when using export.py for docx

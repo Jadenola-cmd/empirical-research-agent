@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-07-01 Root context cleanup
+
+### Changed
+
+- Moved governance documents from the repository root to `docs/governance/`.
+- Moved validation records from the repository root to `docs/validation/`.
+- Moved active test fixtures from `test-data/` to `tests/fixtures/`.
+- Moved regression evidence from `golden_outputs/` to `tests/golden_outputs/`.
+- Moved legacy analysis scripts, logs, HTML reports, and derived result files to `docs/archive/legacy-test-data/`.
+- Rewrote `AGENTS.md` as a concise new-session index to reduce default context loading.
+
+### Verification
+
+- `python tests/regression_p0_p1.py`
+- `python -m compileall engine tests`
+
 本文件记录 Empirical Research Agent v2 的重要变更。
 
 ## 2026-07-01
@@ -10,8 +26,8 @@
 - 新增 `tests/regression_p0_p1.py`，覆盖 P0/P1 回归测试。
 - 新增 `tests/llm_behavior_redteam.md`，记录 LLM 绕过 engine 的红队测试用例。
 - 新增 `tests/regression_table_format_p1.md`，记录论文期刊回归表格式验收标准。
-- 新增 `P0P1修复记录.md`，记录本轮 P0/P1 修复内容和验证结果。
-- 新增治理文档：`STATUS.md`、`CHANGELOG.md`、`DEBT.md`、`MIGRATION_FROM_V1.md`。
+- 新增 `docs/validation/P0P1修复记录.md`，记录本轮 P0/P1 修复内容和验证结果。
+- 新增治理文档：`docs/governance/STATUS.md`、`docs/governance/CHANGELOG.md`、`docs/governance/DEBT.md`、`docs/governance/MIGRATION_FROM_V1.md`。
 - 新增 `AGENTS.md`，作为项目级启动索引，帮助新会话快速了解项目定位、架构、规则、验证命令和治理文档。
 - 新增正式工作区迁移说明，确定 v2 正式路径为 `D:\00_Workspace\05_empirical-research-agent`。
 
@@ -37,7 +53,7 @@
 - 修复非法 JSON config 暴露 Python traceback 的问题。
 - 修复 PSM/DID 业务错误退出码为 0 的问题。
 - 修复报告协议默认要求 Tab 分隔复制块与当前输出标准冲突的问题。
-- 修复 `STATUS.md`、`CHANGELOG.md`、`DEBT.md`、`MIGRATION_FROM_V1.md` 等治理文档中文乱码问题。
+- 修复 `docs/governance/STATUS.md`、`docs/governance/CHANGELOG.md`、`docs/governance/DEBT.md`、`docs/governance/MIGRATION_FROM_V1.md` 等治理文档中文乱码问题。
 
 ### Verification
 

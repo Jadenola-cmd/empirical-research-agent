@@ -10,23 +10,34 @@
 D:\00_Workspace\05_empirical-research-agent
 ```
 
-旧 v1 项目已归档：
+旧 v1 项目已归档到：
 
 ```text
 D:\99_Archive\05_EmpiricalAssistant_v1_20260701
 ```
 
-本项目后续只维护 v2。v1 仅作为历史设计参考和迁移来源。
+后续只维护 v2。v1 仅作为历史设计参考和迁移来源。
 
-## 架构
+## 新会话最小上下文
+
+新打开对话时，优先只读：
+
+- `AGENTS.md`：项目入口和当前规则。
+- `SKILL.md`：skill 路由、护栏和执行流程。
+- `method_capability.json`：方法可用性和层级。
+- `docs/governance/STATUS.md`：当前状态和下一步。
+
+除非任务需要，不要主动加载归档材料、历史测试输出或旧分析脚本。
+
+## 核心结构
 
 - `protocols/`：阻断型协议层，负责反幻觉、数据质检、方法边界、结果验证和报告规范。
 - `workflows/`：分析编排层，负责描述统计、假设检验、因果推断、机制分析、异质性、稳健性和可视化流程。
 - `engine/`：确定性 Python 计算层，所有分析数字必须来自这里或用户提供的数据文件。
 - `resources/`：方法解释、参考资料和 interpretation checklist。
 - `templates/`：论文、报告、学位论文等输出模板。
-- `tests/`：回归测试、LLM 行为红队用例和报告格式验收用例。
-- `golden_outputs/`：稳定 JSON 输出样本和测试证据。
+- `tests/`：回归测试、LLM 行为红队用例、报告格式验收用例、测试 fixture 和 golden outputs。
+- `docs/`：治理文档、验收记录和历史归档。
 
 ## 核心规则
 
@@ -50,21 +61,24 @@ python -m compileall engine tests
 核心 engine 冒烟命令：
 
 ```powershell
-python engine/data_audit.py test-data/panel_data.parquet --method panel
-python engine/descriptive.py test-data/panel_data.parquet
-python engine/correlation.py test-data/panel_data.parquet
-python engine/ols.py test-data/panel_data.parquet '{\"dep_var\":\"LEV\",\"indep_vars\":[\"ROA\"],\"control_vars\":[\"GROWTH\",\"SIZE\"],\"robust_se\":true}'
-python engine/panel.py test-data/panel_data.parquet '{\"dep_var\":\"LEV\",\"indep_vars\":[\"ROA\"],\"control_vars\":[\"GROWTH\",\"SIZE\"],\"entity_var\":\"code\",\"time_var\":\"year\",\"model_type\":\"fe\",\"cluster_var\":\"code\"}'
+python engine/data_audit.py tests/fixtures/panel_data.parquet --method panel
+python engine/descriptive.py tests/fixtures/panel_data.parquet
+python engine/correlation.py tests/fixtures/panel_data.parquet
+python engine/ols.py tests/fixtures/panel_data.parquet '{\"dep_var\":\"LEV\",\"indep_vars\":[\"ROA\"],\"control_vars\":[\"GROWTH\",\"SIZE\"],\"robust_se\":true}'
+python engine/panel.py tests/fixtures/panel_data.parquet '{\"dep_var\":\"LEV\",\"indep_vars\":[\"ROA\"],\"control_vars\":[\"GROWTH\",\"SIZE\"],\"entity_var\":\"code\",\"time_var\":\"year\",\"model_type\":\"fe\",\"cluster_var\":\"code\"}'
 ```
 
-## 治理文档
+## 文档位置
 
-- `STATUS.md`：当前状态、下一步、准入判断。
-- `CHANGELOG.md`：重要变更记录。
-- `DEBT.md`：技术债、待决策事项和已解决债务。
-- `MIGRATION_FROM_V1.md`：v1 到 v2 的迁移说明。
-- `P0P1修复记录.md`：P0/P1 修复细节和验证结果。
-- `issues.md`：测试问题清单及修复状态。
+- `docs/governance/STATUS.md`：当前状态、下一步、准入判断。
+- `docs/governance/CHANGELOG.md`：重要变更记录。
+- `docs/governance/DEBT.md`：技术债、待决策事项和已解决债务。
+- `docs/governance/MIGRATION_FROM_V1.md`：v1 到 v2 的迁移说明。
+- `docs/governance/issues.md`：测试问题清单及修复状态。
+- `docs/validation/P0P1修复记录.md`：P0/P1 修复细节和验证结果。
+- `docs/validation/测试执行记录.md`：历史测试执行记录。
+- `docs/validation/最终验收结论.md`：阶段性验收结论。
+- `docs/archive/legacy-test-data/`：旧分析脚本、日志、HTML 报告和派生结果归档。
 
 ## 当前重点
 
@@ -82,15 +96,7 @@ D:\02_Assets\agent-skills\empirical-research-agent
 
 ## 完成任务后
 
-- 更新 `CHANGELOG.md`。
-- 必要时更新 `STATUS.md` / `DEBT.md`。
+- 更新 `docs/governance/CHANGELOG.md`。
+- 必要时更新 `docs/governance/STATUS.md` / `docs/governance/DEBT.md`。
 - 运行核心验证命令。
 - 若创建或修改文件、完成多步骤工作，按全局规范发送飞书通知。
-
-## 注意
-
-当前正式项目已初始化 git，但初始文件可能仍处于 untracked 状态。提交前先检查：
-
-```powershell
-git status --short
-```

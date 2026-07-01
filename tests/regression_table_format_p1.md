@@ -2,8 +2,8 @@
 
 输入：
 
-- `golden_outputs/ols_corrected.json`
-- `golden_outputs/panel_corrected.json`
+- `tests/golden_outputs/ols_corrected.json`
+- `tests/golden_outputs/panel_corrected.json`
 
 任务：
 

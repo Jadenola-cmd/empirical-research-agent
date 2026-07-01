@@ -109,4 +109,4 @@
 
 状态：已解决
 
-说明：`AGENTS.md`、`STATUS.md`、`CHANGELOG.md`、`DEBT.md`、`MIGRATION_FROM_V1.md` 已统一重写为 UTF-8 无 BOM。
+说明：`AGENTS.md`、`docs/governance/STATUS.md`、`docs/governance/CHANGELOG.md`、`docs/governance/DEBT.md`、`docs/governance/MIGRATION_FROM_V1.md` 已统一重写为 UTF-8 无 BOM。

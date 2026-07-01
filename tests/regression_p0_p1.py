@@ -25,7 +25,7 @@ def parse_json(stdout):
 
 
 def test_descriptive_cli_succeeds_with_default_numeric_columns():
-    proc = run_cmd("engine/descriptive.py", "test-data/panel_data.parquet")
+    proc = run_cmd("engine/descriptive.py", "tests/fixtures/panel_data.parquet")
     assert proc.returncode == 0, proc.stdout + proc.stderr
     payload = parse_json(proc.stdout)
     assert payload["type"] == "descriptive"
@@ -33,7 +33,7 @@ def test_descriptive_cli_succeeds_with_default_numeric_columns():
 
 
 def test_correlation_cli_succeeds_with_default_numeric_columns():
-    proc = run_cmd("engine/correlation.py", "test-data/panel_data.parquet")
+    proc = run_cmd("engine/correlation.py", "tests/fixtures/panel_data.parquet")
     assert proc.returncode == 0, proc.stdout + proc.stderr
     payload = parse_json(proc.stdout)
     assert payload["type"] == "correlation"
@@ -42,7 +42,7 @@ def test_correlation_cli_succeeds_with_default_numeric_columns():
 
 
 def test_data_audit_reads_csv_and_recognizes_code_year_panel():
-    proc = run_cmd("engine/data_audit.py", "test-data/panel_data.csv", "--method", "panel")
+    proc = run_cmd("engine/data_audit.py", "tests/fixtures/panel_data.csv", "--method", "panel")
     assert proc.returncode == 0, proc.stdout + proc.stderr
     payload = parse_json(proc.stdout)
     assert payload["file"]["rows"] == 174
@@ -52,7 +52,7 @@ def test_data_audit_reads_csv_and_recognizes_code_year_panel():
 
 
 def test_invalid_json_config_returns_json_error_without_traceback():
-    proc = run_cmd("engine/ols.py", "test-data/panel_data.parquet", "{bad json}")
+    proc = run_cmd("engine/ols.py", "tests/fixtures/panel_data.parquet", "{bad json}")
     assert proc.returncode == 1
     assert "Traceback" not in proc.stderr
     payload = parse_json(proc.stdout)
@@ -61,7 +61,7 @@ def test_invalid_json_config_returns_json_error_without_traceback():
 
 
 def test_psm_and_did_business_errors_exit_nonzero(tmp_path):
-    df = pd.read_parquet(ROOT / "test-data/panel_data.parquet").copy()
+    df = pd.read_parquet(ROOT / "tests/fixtures/panel_data.parquet").copy()
     df["bad_treat"] = df["STATE"]
     bad_psm = tmp_path / "bad_psm.parquet"
     df.to_parquet(bad_psm)
@@ -77,7 +77,7 @@ def test_psm_and_did_business_errors_exit_nonzero(tmp_path):
 
     did_proc = run_cmd(
         "engine/did.py",
-        "test-data/panel_data.parquet",
+        "tests/fixtures/panel_data.parquet",
         '{"dv":"LEV","treatment":"STATE"}',
     )
     assert did_proc.returncode == 1

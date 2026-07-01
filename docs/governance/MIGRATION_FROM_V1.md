@@ -81,10 +81,10 @@ engine/      确定性计算层
 v2 根目录现在包含：
 
 - `AGENTS.md`：项目级启动索引。
-- `STATUS.md`：当前状态、下一步、准入判断。
-- `CHANGELOG.md`：重要变更记录。
-- `DEBT.md`：技术债和待决策事项。
-- `MIGRATION_FROM_V1.md`：本迁移说明。
+- `docs/governance/STATUS.md`：当前状态、下一步、准入判断。
+- `docs/governance/CHANGELOG.md`：重要变更记录。
+- `docs/governance/DEBT.md`：技术债和待决策事项。
+- `docs/governance/MIGRATION_FROM_V1.md`：本迁移说明。
 
 ## 推荐后续动作
 

@@ -9,7 +9,7 @@ import json, sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import pandas as pd
-from engine.lib.cli_utils import load_dataframe, parse_json_config
+from engine.lib.cli_utils import load_dataframe, parse_config_arg
 
 
 def run_robustness(df: pd.DataFrame, method: str, checks: list,
@@ -31,7 +31,7 @@ def main():
         sys.exit(1)
     parquet_path = Path(sys.argv[1])
     try:
-        config = parse_json_config(sys.argv[2])
+        config = parse_config_arg(sys.argv)
         df = load_dataframe(parquet_path)
         result = run_robustness(df, **config)
         print(json.dumps(result, ensure_ascii=False, indent=2))

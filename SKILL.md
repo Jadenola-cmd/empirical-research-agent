@@ -1,4 +1,4 @@
-﻿---
+---
 name: empirical-research-agent
 description: 用于论文写作者快速跑计量分析。当用户提供CSV/Excel数据并提出OLS/面板回归/DID/PSM/调节效应/中介效应/异质性分析等计量需求时使用，自动诊断数据、检查方法适用性、运行分析并按检查清单生成论文可用的解读文字。所有数字来自确定性Python计算引擎，禁止Agent心算或编造。
 ---

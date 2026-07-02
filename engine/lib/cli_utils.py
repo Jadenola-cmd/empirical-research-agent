@@ -27,6 +27,20 @@ def parse_json_config(raw):
             raise ValueError(f"Invalid JSON config: {exc}") from exc
 
 
+def parse_config_arg(argv, *, index=2):
+    if len(argv) <= index:
+        raise ValueError("Missing JSON config")
+    if argv[index] == "--config-file":
+        if len(argv) <= index + 1:
+            raise ValueError("Missing config file path after --config-file")
+        config_path = Path(argv[index + 1])
+        try:
+            return json.loads(config_path.read_text(encoding="utf-8-sig"))
+        except json.JSONDecodeError as exc:
+            raise ValueError(f"Invalid JSON config file: {exc}") from exc
+    return parse_json_config(argv[index])
+
+
 def load_dataframe(path):
     data_path = Path(path)
     ext = data_path.suffix.lower()

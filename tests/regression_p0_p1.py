@@ -1,4 +1,5 @@
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -11,9 +12,13 @@ PYTHON = sys.executable
 
 
 def run_cmd(*args):
+    env = os.environ.copy()
+    env["PYTHONIOENCODING"] = "utf-8"
     return subprocess.run(
         [PYTHON, *args],
         cwd=ROOT,
+        env=env,
+        encoding="utf-8",
         text=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -60,6 +65,31 @@ def test_invalid_json_config_returns_json_error_without_traceback():
     assert "Invalid JSON config" in payload["error"]
 
 
+def test_ols_accepts_config_file(tmp_path):
+    config_path = tmp_path / "ols_config.json"
+    config_path.write_text(
+        json.dumps(
+            {
+                "dep_var": "LEV",
+                "indep_vars": ["ROA"],
+                "control_vars": ["GROWTH", "SIZE"],
+                "robust_se": True,
+            }
+        ),
+        encoding="utf-8",
+    )
+    proc = run_cmd(
+        "engine/ols.py",
+        "tests/fixtures/panel_data.parquet",
+        "--config-file",
+        str(config_path),
+    )
+    assert proc.returncode == 0, proc.stdout + proc.stderr
+    payload = parse_json(proc.stdout)
+    assert payload["type"] == "ols"
+    assert payload["dep_var"] == "LEV"
+
+
 def test_psm_and_did_business_errors_exit_nonzero(tmp_path):
     df = pd.read_parquet(ROOT / "tests/fixtures/panel_data.parquet").copy()
     df["bad_treat"] = df["STATE"]
@@ -95,6 +125,36 @@ def test_reporting_protocol_does_not_default_to_tab_blocks():
 def test_requirements_include_linearmodels_for_panel():
     requirements = (ROOT / "requirements.txt").read_text(encoding="utf-8")
     assert "linearmodels>=5.0" in requirements
+
+
+def test_export_generates_journal_regression_table():
+    proc = run_cmd(
+        "engine/export.py",
+        "tests/golden_outputs/ols_corrected.json",
+        '{"export_format":"markdown","template":"paper","comparison_paths":["tests/golden_outputs/panel_corrected.json"]}',
+    )
+    assert proc.returncode == 0, proc.stdout + proc.stderr
+    payload = parse_json(proc.stdout)
+    content = payload["content"]
+    assert "Table 2: Baseline Regression Results" in content
+    assert "(1) 混合 OLS" in content
+    assert "(2) 固定效应 FE" in content
+    assert "-0.405**" in content
+    assert "(-2.145)" in content
+    assert "Within R²" in content
+    assert "clustered" in content
+    assert "[VERIFIED]" in content
+    assert "\t" not in content
+
+
+def test_golden_outputs_do_not_contain_mojibake_text():
+    suspicious = ("�", "����", "���", "��")
+    for rel_path in (
+        "tests/golden_outputs/ols_corrected.json",
+        "tests/golden_outputs/panel_corrected.json",
+    ):
+        text = (ROOT / rel_path).read_text(encoding="utf-8")
+        assert not any(token in text for token in suspicious), rel_path
 
 
 if __name__ == "__main__":

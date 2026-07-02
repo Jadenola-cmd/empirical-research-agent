@@ -15,7 +15,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import pandas as pd
 import numpy as np
-from engine.lib.cli_utils import exit_for_result, load_dataframe, parse_json_config
+from engine.lib.cli_utils import exit_for_result, load_dataframe, parse_config_arg
 
 
 class NpEncoder(json.JSONEncoder):
@@ -387,7 +387,7 @@ def main():
         sys.exit(1)
 
     try:
-        config = parse_json_config(sys.argv[2])
+        config = parse_config_arg(sys.argv)
         df = load_dataframe(sys.argv[1])
         result = run_psm(df, **config)
         print(json.dumps(result, ensure_ascii=False, indent=2, cls=NpEncoder))

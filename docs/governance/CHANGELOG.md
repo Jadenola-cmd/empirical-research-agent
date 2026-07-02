@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-07-02 Tax innovation empirical analysis output
+
+### Added
+
+- 在 `AI_Output/Codex/` 生成“避税与企业创新”实证分析数据集、engine 原始 JSON 输出和论文格式 Markdown 报告。
+- 新增一次性数据准备脚本 `AI_Output/Codex/prepare_tax_innovation_dataset.py`，用于从 `tests/测试数据/` 合并税项名义税率、专利申请、研发投入、分析师关注度和现金流数据。
+- 新增报告生成脚本 `AI_Output/Codex/generate_tax_innovation_report.py`，仅编排 `engine/descriptive.py`、`engine/correlation.py`、`engine/panel.py` 和 `engine/diagnostics.py` 输出，不手写统计计算。
+
+### Notes
+
+- 当前数据无法构造 ETR/BTD 类严格避税指标，报告将 `tax_saving_rate = 0.25 - tax_rate` 解释为低名义所得税率/税收优惠强度代理。
+- 数据质检为 WARN，主要风险为部分变量异常值和高缺失治理变量；正式报告已在结论可信度中降级标注。
+
+### Verification
+
+- `D:/anaconda/python.exe AI_Output/Codex/prepare_tax_innovation_dataset.py`
+- `D:/anaconda/python.exe engine/data_audit.py AI_Output/Codex/tax_innovation_panel.parquet --method panel`
+- `D:/anaconda/python.exe AI_Output/Codex/generate_tax_innovation_report.py`
+
 ## 2026-07-01 Root context cleanup
 
 ### Changed
@@ -17,6 +36,43 @@
 - `python -m compileall engine tests`
 
 本文件记录 Empirical Research Agent v2 的重要变更。
+
+## 2026-07-01 Config file CLI support
+
+### Added
+
+- 新增 `parse_config_arg()`，所有 config 型 engine 支持直接传入 JSON 字符串或 `--config-file <json_path>`。
+- 新增 OLS `--config-file` 回归测试，覆盖 PowerShell 复杂 JSON 参数体验。
+
+### Changed
+
+- 配置文件按 `utf-8-sig` 读取，兼容 PowerShell `Set-Content -Encoding UTF8` 生成的 BOM 文件。
+
+### Verification
+
+- `python tests/regression_p0_p1.py`
+- `python -m compileall engine tests`
+- `python engine/panel.py tests/fixtures/panel_data.parquet --config-file <temp_panel_config.json>`
+
+## 2026-07-01 Final P1/P2 validation cleanup
+
+### Added
+
+- `engine/export.py` 新增 paper Markdown 回归表生成能力，可合并 OLS 与 Panel JSON 输出。
+- `tests/regression_p0_p1.py` 新增期刊回归表链路测试和 golden 输出乱码扫描测试。
+- `tests/llm_behavior_redteam.md` 新增本轮真实会话红队验收记录。
+
+### Changed
+
+- `tests/golden_outputs/ols_corrected.json` 与 `tests/golden_outputs/panel_corrected.json` 转为 UTF-8 无 BOM，并修复中文 `notes`、Hausman `conclusion` 乱码。
+- `engine/export.py` 输出 Markdown 时使用 UTF-8 stdout，避免 Windows 控制台编码阻断 `R²` 等报告文本。
+
+### Verification
+
+- `python tests/regression_p0_p1.py`
+- `python -m compileall engine tests`
+- `python engine/export.py tests/golden_outputs/ols_corrected.json --config-file <temp_export_config.json>`
+- `robocopy D:\00_Workspace\05_empirical-research-agent D:\02_Assets\agent-skills\empirical-research-agent /E ...`
 
 ## 2026-07-01
 

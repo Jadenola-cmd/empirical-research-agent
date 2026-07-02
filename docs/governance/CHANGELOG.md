@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-07-02 README added
+
+### Added
+
+- 新增根目录 `README.md`，作为 GitHub 首页入口，概述项目定位、核心原则、支持能力、快速开始、项目结构和验证命令。
+
+### Verification
+
+- `D:/anaconda/python.exe -m compileall engine tests`
+
 ## 2026-07-02 Tax innovation empirical analysis output
 
 ### Added

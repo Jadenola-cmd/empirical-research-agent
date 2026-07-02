@@ -37,6 +37,7 @@ P0/P1 已完成修复并通过本地回归测试。
 - LLM 行为红队测试已完成本轮验收记录。
 - 已同步到全局 skill 发布目录 `D:\02_Assets\agent-skills\empirical-research-agent`。
 - 已生成 `AI_Output/Codex/避税与企业创新实证分析报告.md`，报告使用 `engine/descriptive.py`、`engine/correlation.py`、`engine/panel.py`、`engine/diagnostics.py` 的原始输出作为数字来源。
+- 已新增 GitHub 首页说明文档 `README.md`。
 
 ## 核心验证命令
 

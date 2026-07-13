@@ -100,3 +100,12 @@ D:\02_Assets\agent-skills\empirical-research-agent
 - 必要时更新 `docs/governance/STATUS.md` / `docs/governance/DEBT.md`。
 - 运行核心验证命令。
 - 若创建或修改文件、完成多步骤工作，按全局规范发送飞书通知。
+
+## 项目记忆
+
+- 当前状态：`docs/governance/STATUS.md`
+- 技术债：`docs/governance/DEBT.md`
+- 历史变更：`docs/governance/CHANGELOG.md`
+- 会话摘要：`D:/01_Knowledge/Projects/202606_EmpiricalAssistant/会话摘要/`
+- 正式知识：`D:/01_Knowledge/Projects/202606_EmpiricalAssistant/知识/`
+- 复杂任务开始前按需搜索 `D:/01_Knowledge/Knowledge/`

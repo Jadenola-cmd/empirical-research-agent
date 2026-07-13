@@ -3,7 +3,7 @@
 ## 设计原则
 
 protocols/ 层是 **阻断型** 的：不通过的步骤终止执行或降级输出，不得跳过。
-这与 workflows/ 层的"编排型"和 engine/ 层的"计算型"有本质区别。
+这与 modes/ 层的"研究阶段识别"、workflows/ 层的"编排型"和 engine/ 层的"计算型"有本质区别。
 
 ## 执行顺序
 
@@ -11,6 +11,9 @@ protocols/ 层是 **阻断型** 的：不通过的步骤终止执行或降级输
 
 ```
 用户请求
+  │
+  ├─ [Step 0] modes/*.md          ← 研究场景识别：探索 / 执行 / 迭代
+  │     └─ 无法判断 → 默认研究探索模式
   │
   ├─ [P0] anti_hallucination.md  ← 横切约束，全程生效
   │
@@ -20,6 +23,10 @@ protocols/ 层是 **阻断型** 的：不通过的步骤终止执行或降级输
   ├─ [P2] method_selection.md    ← 路由决策：选方法 → 查 capability.json
   │     └─ 方法不在capability中 → 告知用户"当前版本暂不支持"
   │     └─ 方法tier > 用户tier → 提示升级
+  │
+  ├─ [Step 4A] variable_mapping.md ← 硬阻断：变量映射未确认 → 不得回归
+  │
+  ├─ [Step 4B] panel_build_plan.md ← 硬阻断：样本构建未确认 → 不得回归
   │
   ├─ [workflow 执行]             ← 由对应 workflow/*.md 编排 engine/ 调用
   │
@@ -36,6 +43,8 @@ protocols/ 层是 **阻断型** 的：不通过的步骤终止执行或降级输
 | anti_hallucination | 全程 | 立即终止当前回复，修正后重试 | 提供真实数据或engine输出 |
 | data_audit | 用户上传数据后 | 拒绝跑分析，返回质检报告 | 用户修正数据或确认接受风险 |
 | method_selection | 选方法时 | 提示"暂不支持"或"需要升级" | 用户选择替代方法或升级tier |
+| variable_mapping | 回归前 | 不得执行回归 | 用户确认 Y/X/控制变量、来源、计算方式和方向 |
+| panel_build_plan | 多表/面板回归前 | 不得执行回归 | 用户确认主表、合并表、join、缺失值、缩尾和最终样本 |
 | result_validation | engine输出后 | [SPECULATIVE]标签项降级处理 | 补充稳健性检验后重新评级 |
 | reporting | 生成输出时 | 不阻断，仅格式警告 | 按模板重新排版 |
 
@@ -45,3 +54,4 @@ protocols/ 层是 **阻断型** 的：不通过的步骤终止执行或降级输
 - Agent 执行时必须先读对应协议文件，再执行操作
 - 协议之间通过 method_capability.json 共享能力边界信息
 - 用户可以通过"跳过质检"明确要求绕过 P1（但 Agent 必须在输出中标注风险）
+- 用户不能跳过变量映射确认和样本构建确认来获得正式回归结论；非交互环境只能降级为探索性结果

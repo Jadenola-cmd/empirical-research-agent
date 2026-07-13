@@ -7,73 +7,136 @@ description: 用于论文写作者快速跑计量分析。当用户提供CSV/Exc
 
 ## 核心原则（最先读）
 
-本skill的架构哲学：**协议阻断 > 工作流编排 > 引擎计算**。
+本skill的架构哲学：**场景识别 > 协议阻断 > 工作流编排 > 引擎计算**。
 
 1. **所有数字必须来自 `engine/` 脚本输出或用户提供的数据文件。** 严禁Agent心算、推断、编造任何数字。
 2. **protocols/ 层是阻断型的**：不通过的步骤终止执行或降级输出，不得跳过。
 3. **结果解读必须标注可信度标签**：[VERIFIED] / [INFERRED] / [SPECULATIVE]。
 4. **不支持的方法不能替代**：用户要求的方法不在 `method_capability.json` 中时，告知"当前版本暂不支持"，不得用近似方法替代。
 
-## 场景路由
+## 第一层：操作意图路由
 
-收到用户请求后，按以下逻辑分流：
+收到用户请求后，先按操作意图做互斥分流；凡涉及数据诊断、探索、建模、重跑或报告生成的请求，都进入“标准流水线”，并立刻执行 Step 0 研究阶段识别。`modes/` 决定用户当前研究阶段，`workflows/` 只在研究阶段确定后负责具体方法编排。
 
-| 用户输入特征 | 路由 | 读哪个文件 |
+按以下优先级判断：
+
+| 优先级 | 用户输入特征 | 路由 | 读哪个文件 |
 |---|---|---|
-| 有数据文件 + 分析需求 | 标准流水线 | 先读 `protocols/protocol_order.md` |
-| "帮我写XX方法的代码" | 代码生成模式 | 跳到对应 `workflows/` 的代码分支，只输出代码 |
-| "帮我解读这个结果" | 结果解读模式 | 读 `protocols/result_validation.md` → `protocols/reporting.md` |
-| "该用什么方法？" | 方法咨询 | 读 `protocols/method_selection.md` → 返回建议（不出数字） |
-| "只看看数据" | 探索模式 | 读 `workflows/descriptive.md` |
+| 1 | 只要求写代码、脚本或命令，不要求运行，不要求输出分析数字 | 代码生成模式 | 跳到对应 `workflows/` 的代码分支，只输出代码 |
+| 2 | 只要求解读用户已有结果，不改变量/样本/模型，不重跑 | 结果解读模式 | 读 `protocols/result_validation.md` → `protocols/reporting.md` |
+| 3 | 只问该用什么方法，不要求执行、不要求输出数字 | 方法咨询 | 读 `protocols/method_selection.md` → 返回建议（不出数字） |
+| 4 | 涉及数据诊断、探索、建模、重跑、报告生成，或意图混合 | 标准流水线 → Step 0 研究阶段识别 | 先读 `protocols/protocol_order.md` → 再按阶段读 `modes/research_explore.md` / `modes/model_execute.md` / `modes/result_iterate.md` |
+
+混合意图规则：
+
+- “帮我写代码并跑一下” → 标准流水线，不走代码生成旁路。
+- “帮我解读结果，并把控制变量加上 size 重跑” → 标准流水线 → 结果迭代模式。
+- “我有数据，想看某政策效果，该用什么方法并帮我做” → 标准流水线，先 Step 0，再做方法选择和阻断确认。
+- “只看看数据” / “帮我看看能做什么” → 标准流水线 → 研究探索模式。
+
+标准流水线内的读取顺序固定为：
+
+1. `protocols/protocol_order.md`
+2. 对应 `modes/*.md`
+3. `protocols/model_spec.md`
+4. 必要的阻断协议：`variable_mapping.md` / `panel_build_plan.md`
+5. 对应 `workflows/*.md`
 
 ## 操作模式
 
+操作模式和研究阶段不是同一层分类：
+
+- 操作模式负责决定是否进入标准流水线。
+- 研究阶段只在标准流水线内部由 `modes/` 识别。
+
 ### 模式1：标准流水线（默认）
 
-用户提供数据文件和分析需求时，按 `protocols/protocol_order.md` 的顺序执行：
+用户请求涉及数据诊断、探索、建模、重跑或报告生成时，按 `protocols/protocol_order.md` 的顺序执行：
 
 ```
-[P0] anti_hallucination.md  ← 全程生效
+[Step 0] research_mode       ← 研究场景识别：读 modes/*.md
   ↓
-[P1] data_audit.md          ← 数据质检（不通过→终止）
+[P0] anti_hallucination.md   ← 全程生效
   ↓
-[P2] method_selection.md    ← 选方法 + 查 capability.json
+[P1] data_audit.md           ← 数据质检（不通过→终止）
   ↓
-[workflow]                  ← 执行对应 workflow/*.md
+[P2] method_selection.md     ← 选方法 + 查 capability.json
   ↓
-[P3] result_validation.md   ← 可信度评级
+[Step 4A] variable_mapping.md ← 变量映射确认（回归前硬阻断）
   ↓
-[P4] reporting.md           ← 输出报告
+[Step 4B] panel_build_plan.md ← 样本构建确认（多表/面板回归前硬阻断）
+  ↓
+[workflow]                   ← 执行对应 workflow/*.md
+  ↓
+[P3] result_validation.md    ← 可信度评级
+  ↓
+[P4] reporting.md            ← 输出报告
 ```
+
+#### Step 0：研究阶段识别
+
+在标准流水线开始前，先判断用户处于哪个研究阶段。`modes/` 只管理研究阶段，不承载具体方法编排；具体方法仍由 `workflows/` 负责，阻断规则仍由 `protocols/` 负责，确定性计算仍由 `engine/` 负责。
+
+| 研究场景 | 进入条件 | 行为边界 | 必读文件 |
+|---|---|---|---|
+| 结果迭代模式 | 有上一轮 `model_spec`，且用户要求修改变量、样本、模型、控制变量、固定效应、标准误或报告口径 | 必须继承上一轮 `model_spec`，只修改用户明确要求调整的部分，并输出 `result_diff` | `modes/result_iterate.md`、`protocols/model_spec.md`、`protocols/result_diff.md` |
+| 模型执行模式 | 用户给出最低可执行 `model_spec`，且明确要求跑模型或生成回归报告 | 严格按用户设定执行，不得擅自更换 Y/X、重定义变量方向、扩展研究问题；缺失控制变量、固定效应、标准误或样本方案时进入 Step 4A/4B 确认 | `modes/model_execute.md`、`protocols/model_spec.md` |
+| 研究探索模式 | 用户只提供数据、主题或模糊问题，未达到最低可执行 `model_spec` | 只输出候选研究问题、变量映射建议、数据可用性判断和探索性结果；不得生成正式因果结论 | `modes/research_explore.md`、`protocols/model_spec.md` |
+
+默认规则：如果无法判断，默认进入研究探索模式，而不是模型执行模式。
 
 ### 模式2：代码生成模式
 
-触发词："帮我写代码"、"只写代码"、"给我Python脚本"
+触发条件：用户只要求写代码、脚本或命令，且不要求运行、不要求输出分析数字。
 
 Agent行为：
 - 读对应 `workflows/*.md` 的代码生成分支
 - 输出完整可运行的Python脚本
 - **不执行脚本，不预判结果，不输出任何数字**
+- 如果用户同时要求“跑一下”“生成结果”“输出报告”，改走标准流水线
 
 ### 模式3：结果解读模式
 
-触发词："帮我解读"、"看看这个结果"、"这个结果什么意思"
+触发条件：用户只要求解读已有结果，不修改变量、样本、模型、控制变量、固定效应、标准误或报告口径。
 
 Agent行为：
 - 读 `protocols/result_validation.md`
 - 读对应的 `resources/` 参考文件
 - 只解读用户提供的真实输出，标注可信度标签
+- 如果用户要求基于结果继续调整并重跑，改走标准流水线 → 结果迭代模式
 
 ### 模式4：方法咨询
 
-触发词："该用什么方法"、"方法选择"、"这个数据适合什么方法"
+触发条件：用户只问方法选择，不要求执行分析、不要求输出统计数字。
 
 Agent行为：
 - 读 `protocols/method_selection.md` 决策树
 - 返回方法建议和理由
 - 不执行任何分析，不输出数字
+- 如果用户要求“推荐方法并帮我做”，改走标准流水线
 
 ## 标准流水线详细步骤
+
+### Step 0: 研究阶段识别
+先读对应 `modes/*.md`，按以下顺序判断用户当前研究阶段：
+
+1. 结果迭代模式：有上一轮 `model_spec`，且用户要求修改变量、样本、模型、控制变量、固定效应、标准误或报告口径。
+2. 模型执行模式：用户给出最低可执行 `model_spec`，且明确要求跑模型或生成回归报告。
+3. 研究探索模式：用户只提供数据、主题或模糊问题，未达到最低可执行 `model_spec`。
+
+最低可执行 `model_spec` = `dep_var` + `indep_vars` + `method` + `run_intent`。控制变量、固定效应、标准误和样本构建方案可以缺失，但缺失项必须在 Step 4A/4B 中阻断确认，不得由 Agent 自动补全。
+
+如果无法判断，默认进入研究探索模式。识别后生成或继承 `model_spec`，后续所有回归设定以 `protocols/model_spec.md` 为单一记录来源。
+
+### Step 0 边界案例
+
+| 用户请求 | 路径 |
+|---|---|
+| “我有数据，帮我看看能做什么” | 标准流水线 → 研究探索模式 |
+| “用 OLS 看 tax 对 innovation 的影响” | 标准流水线 → 模型执行模式，Step 4A 继续确认变量映射 |
+| “基于上一轮，把 X 换成 tax_avoidance” | 标准流水线 → 结果迭代模式 |
+| “帮我写 OLS 代码并跑一下” | 标准流水线，不走代码生成旁路 |
+| “帮我解读这张回归表，并把控制变量加上 size 重跑” | 标准流水线 → 结果迭代模式 |
 
 ### Step 1: 加载数据
 ```bash
@@ -89,21 +152,44 @@ python engine/data_audit.py <file_path>
 ### Step 3: 方法选择 [P2]
 按 `protocols/method_selection.md` 决策树选方法，查 `method_capability.json` 确认可用性和tier层级。
 
-### Step 4: 变量确认（关键步骤，回归类方法不可跳过）
-在跑回归之前，必须向用户展示结构化摘要并等待确认：
+### Step 4A: 变量映射确认（硬阻断，回归类方法不可跳过）
+读取 `protocols/variable_mapping.md`。任何回归前必须向用户输出并等待确认：
 
+- Y / X / 控制变量
+- 来源表
+- 来源字段
+- 计算方式
+- 经济含义
+- 方向说明
+
+尤其要说明：
+
+- Y 是创新投入、创新产出，还是创新质量。
+- X 值越大代表税负越重，还是避税程度越高。
+- 如果变量经过转换，必须说明对系数方向的影响。
+
+用户确认前不得执行回归。
+
+### Step 4B: 样本构建确认（硬阻断，多表/面板回归不可跳过）
+读取 `protocols/panel_build_plan.md`。多表数据回归前必须向用户输出并等待确认：
+
+- 主表
+- 合并表
+- join key
+- join type
+- 合并前样本量
+- 合并后样本量
+- 缺失值处理
+- 缩尾处理
+- 最终样本量
+
+用户确认前不得执行回归。
+
+如果非交互环境无法确认，报告必须标注：
+
+```text
+[WARN] 未经过变量/样本确认，本报告仅为探索性结果，不得作为正式结论。
 ```
-我准备这样跑分析，请确认：
-- **方法**：{方法名称}
-- **因变量(Y)**：{变量名}（{中文含义}）
-- **核心自变量(X)**：{变量名}（{中文含义}）
-- **控制变量**：{列表}
-- **标准误类型**：{类型}
-
-以上设置确认吗？需要调整请告诉我。
-```
-
-用户回复"可以/确认"后才继续。不确认不跑回归。
 
 ### Step 5: 基线表格（回归类方法默认执行）
 在跑用户要求的方法之前，先跑：
@@ -125,6 +211,14 @@ python engine/data_audit.py <file_path>
 按 `protocols/reporting.md` 生成三线表 + 解读文字。
 按用户场景选择模板：`templates/thesis.md` / `templates/paper.md` / `templates/report.md`。
 
+每份报告开头必须包含“任务卡”：
+
+- 当前研究场景：研究探索 / 模型执行 / 结果迭代
+- 完成等级：探索性 / 草稿级 / 已验证
+- 是否经过变量确认：是 / 否
+- 是否经过样本构建确认：是 / 否
+- 是否可作为正式结论：是 / 否
+
 ### Step 9（可选）: 导出Word
 若用户要求输出Word文档，调用 documents skill 生成 .docx 文件。
 
@@ -143,7 +237,7 @@ rd 为 planned（尚未实现），probit/logit/PCA 等不在能力范围内。
 ## 护栏
 
 1. 数字必须来自 engine 输出，禁止心算或编造
-2. 回归类方法（ols/panel/moderation/mediation/heterogeneity）跑之前必须经过变量确认
+2. 回归类方法（ols/panel/moderation/mediation/heterogeneity）跑之前必须经过变量映射确认和必要的样本构建确认
 3. 解读前必须读对应的 interpretation checklist（在 `resources/` 中），按清单逐项核对
 4. 不支持的方法明确告知"当前版本暂不支持"，不强行用近似方法替代
 5. 所有结论标注可信度标签 [VERIFIED]/[INFERRED]/[SPECULATIVE]
@@ -156,11 +250,19 @@ rd 为 planned（尚未实现），probit/logit/PCA 等不在能力范围内。
 empirical-research-agent/
 ├── SKILL.md                      # 本文件：总入口 + 场景路由 + 模式切换
 ├── method_capability.json        # 机器可读能力注册表 + 定价层级
+├── modes/                        # 研究阶段识别层
+│   ├── research_explore.md       # 研究探索模式
+│   ├── model_execute.md          # 模型执行模式
+│   └── result_iterate.md         # 结果迭代模式
 ├── protocols/                    # 阻断型协议层
 │   ├── protocol_order.md         # 执行顺序与阻断规则
 │   ├── anti_hallucination.md     # 反幻觉协议（横切约束）
 │   ├── data_audit.md             # 数据质检协议（前置阻断）
 │   ├── method_selection.md       # 方法选择决策树（路由决策）
+│   ├── variable_mapping.md       # 变量映射确认协议
+│   ├── panel_build_plan.md       # 样本构建确认协议
+│   ├── model_spec.md             # 模型设定记录协议
+│   ├── result_diff.md            # 结果迭代差异协议
 │   ├── result_validation.md      # 结果验证与可信度评级（后置阻断）
 │   └── reporting.md              # 输出规范（三线表+解读格式）
 ├── workflows/                    # 编排层（调用engine，不直接计算）
@@ -208,14 +310,16 @@ empirical-research-agent/
 
 Agent流程：
 1. 读 `protocols/protocol_order.md` → 确认标准流水线
-2. 运行 `engine/data_audit.py data.csv` → 质检通过
-3. 读 `protocols/method_selection.md` → 截面数据+影响因素 → hypothesis → ols
-4. 查 `method_capability.json` → ols: available, tier=pro
-5. 变量确认（展示摘要，等用户确认）
-6. 跑 baseline（descriptive + correlation）
-7. 跑 `engine/ols.py` → 获得回归结果JSON
-8. 读 `protocols/result_validation.md` → 标注可信度标签
-9. 读 `protocols/reporting.md` + `templates/paper.md` → 生成三线表+解读
+2. Step 0 识别为模型执行模式，读 `modes/model_execute.md` + `protocols/model_spec.md`
+3. 运行 `engine/data_audit.py data.csv` → 质检通过
+4. 读 `protocols/method_selection.md` → 截面数据+影响因素 → hypothesis → ols
+5. 查 `method_capability.json` → ols: available, tier=pro
+6. Step 4A 变量映射确认，等用户确认
+7. Step 4B 如涉及多表/面板构建则样本构建确认，等用户确认
+8. 跑 baseline（descriptive + correlation）
+9. 跑 `engine/ols.py` → 获得回归结果JSON
+10. 读 `protocols/result_validation.md` → 标注可信度标签
+11. 读 `protocols/reporting.md` + `templates/paper.md` → 生成任务卡 + 三线表 + 解读
 
 ### 示例2：方法咨询
 
